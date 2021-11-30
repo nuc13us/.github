@@ -23,19 +23,11 @@ jobs:
         repository: ${{ github.event.client_payload.repository.full_name }}
         ref: develop
         token: ${{ github.event.client_payload.token }}
-  semgrep:
-    name: Semgrep Scan
-    runs-on: ubuntu-latest
-    steps:
-      # Fetch project source
-      - uses: actions/checkout@v2
-      - uses: returntocorp/semgrep-action@v1
-        with:
-          config: >- # more at semgrep.dev/explore
-            p/security-audit
-            p/secrets
-        # == Optional settings in the `with:` block
+    - name: semgrep
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: >- # more at semgrep.dev/explore
+          p/security-audit
+          p/secrets
 
-        # Change job timeout (default is 1800 seconds; set to 0 to disable)
-        env:
-          SEMGREP_TIMEOUT: 300
+        
