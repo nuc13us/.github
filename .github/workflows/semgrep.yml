@@ -23,11 +23,15 @@ jobs:
         repository: ${{ github.event.client_payload.repository.full_name }}
         ref: develop
         token: ${{ github.event.client_payload.token }}
-    - name: semgrep
-      uses: returntocorp/semgrep-action@v1
+#     - name: semgrep
+#       uses: returntocorp/semgrep-action@v1
+#       with:
+#         config: >- # more at semgrep.dev/explore
+#           p/security-audit
+#           p/secrets
+    - name: trufflehog-actions-scan
+      uses: edplato/trufflehog-actions-scan@master
       with:
-        config: >- # more at semgrep.dev/explore
-          p/security-audit
-          p/secrets
+        scanArguments: "--regex --entropy=True --max_depth=100 --rules /regexes.json" # Add custom options here*
 
         
