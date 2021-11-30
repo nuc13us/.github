@@ -1,0 +1,44 @@
+name: Check for passwords
+
+on:
+  repository_dispatch:
+    types: [org-workflow-bot]  
+   
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: SvanBoxel/organization-workflow@main
+      with:
+        id: ${{ github.event.client_payload.id }}
+        callback_url: ${{ github.event.client_payload.callback_url }}
+        sha: ${{ github.event.client_payload.sha }}
+        run_id: ${{ github.run_id }}
+        name: ${{ github.workflow }}
+        enforce: true
+        enforce_admin: true
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: ${{ github.event.client_payload.repository.full_name }}
+        ref: ${{ github.event.client_payload.sha }}
+        token: ${{ github.event.client_payload.token }}
+  semgrep:
+    name: Semgrep Scan
+    runs-on: ubuntu-latest
+    # Skip any PR created by dependabot to avoid permission issues
+    if: contains(github.event.comment.body, '/security')
+    steps:
+      # Fetch project source
+      - uses: actions/checkout@v2
+
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          config: >- # more at semgrep.dev/explore
+            p/security-audit
+            p/secrets
+        # == Optional settings in the `with:` block
+
+        # Change job timeout (default is 1800 seconds; set to 0 to disable)
+        env:
+          SEMGREP_TIMEOUT: 300
