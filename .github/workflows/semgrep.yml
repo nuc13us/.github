@@ -1,4 +1,4 @@
-name: Check for passwords
+name: semgrep
 
 on:
   repository_dispatch:
