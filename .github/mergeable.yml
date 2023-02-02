@@ -1,17 +1,9 @@
 version: 2
 mergeable:
-  - when: issues.opened
+  - when: pull_request.*
     validate:
-      - do: title
-        begins_with:
-          match: ['AUTH', 'SOCIAL', 'CORE']
-      - do: label
-        must_include:
-          regex: bug|enhancement
-    fail:
-      - do: comment
-        payload:
-          body: >
-            The following problems were found with this issue:
-              - Title must begin with `AUTH`, `SOCIAL` or `CORE`
-              - The issue should either be labeled `bug` or `enhancement`
+      - do: size
+        lines:
+          max:
+            count: 500
+            message: Change is very large. Should be under 500 lines of addtions and deletions.
