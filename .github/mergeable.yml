@@ -1,10 +1,17 @@
 version: 2
 mergeable:
-  - when: pull_request.*
-    name: "Greet a contributor"
-    validate: []
-    pass:
+  - when: issues.opened
+    validate:
+      - do: title
+        begins_with:
+          match: ['AUTH', 'SOCIAL', 'CORE']
+      - do: label
+        must_include:
+          regex: bug|enhancement
+    fail:
       - do: comment
         payload:
           body: >
-            Thanks for creating a pull request! A maintainer will review your changes shortly. Please don't be discouraged if it takes a while.
+            The following problems were found with this issue:
+              - Title must begin with `AUTH`, `SOCIAL` or `CORE`
+              - The issue should either be labeled `bug` or `enhancement`
